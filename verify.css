@@ -49,7 +49,7 @@ img {
   text-align: left;
   width: 100%;
 }
-.startVerify .loadBtn span {
+.startVerify .loadBtn .loadBtnInfo {
   vertical-align: middle;
 }
 .startVerify .loadBtn .loading {
@@ -135,6 +135,11 @@ img {
 }
 .backgroundImg .verifyingIcon .success, .backgroundImg .verifyingIcon .failure {
   font-size: 60px;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: -0.125em;
+  display: inline-block;
 }
 .backgroundImg .verifyingIcon .success {
   color: #1ca21c;
@@ -237,10 +242,8 @@ img {
 }
 
 [class^="icon-"], [class*=" icon-"] {
-  height: 1em;
-  vertical-align: -0.125em;
-  display: inline-block;
   font-family: 'icomoon' !important;
+  transform-origin: 0px 0px;
   speak: none;
   font-style: normal;
   font-weight: normal;

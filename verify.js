@@ -640,15 +640,21 @@
 			if (successIcon) successIcon.remove();
 			var failureIcon = verifyRes.querySelector(".icon-x-check-alt");
 			if (failureIcon) failureIcon.remove();
+			
+			var verifyResStyle = {};
 			if (this.success == true) {
 				verifyRes.className = "verifyRes success";
 				verifyRes.appendChild(this.successIcon());
+				verifyResStyle.color = this.successColor;
 			} else if (this.success == false) {
 				verifyRes.className = "verifyRes failure";
 				verifyRes.appendChild(this.failureIcon());
+				verifyResStyle.color = this.failureColor;
 			} else {
 				verifyRes.className = "verifyRes loading";
+				verifyResStyle.color = "inherit";
 			}
+			this.applyStyle(verifyRes, verifyResStyle);
 			if (this.showVerifying) {
 				verifyingIcon.className = "verifyingIcon";
 			} else {

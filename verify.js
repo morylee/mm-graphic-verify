@@ -91,13 +91,14 @@
 	var _props = {
 		apiAddr: "https://verify.cloudcrowd.com.cn",
 		webKey: null,
-		verifyWidth: null,
+		verifyWidth: 450,
 		border: "1px solid rgba(51, 51, 51, 0.25)",
 		borderRadius: "4px",
 		bgColor: "rgba(255, 255, 255, 0.9)",
 		color: "#333333",
 		successColor: "#1ca21c",
-		failureColor: "#dd1010"
+		failureColor: "#dd1010",
+		successCallback: null
 	};
 	
 	var _data = {
@@ -138,6 +139,7 @@
 		self.container = doc.querySelector(self.container);
 		self.container.className = "verifyMainBody";
 		
+		self.defaultStartVerify();
 		self.verifyParams();
 		win.addEventListener("scroll", self.adjustVerifyBox.bind(self)); // IE 8一下不支持bind
 		win.addEventListener("resize", self.adjustVerifyBox.bind(self));
@@ -160,7 +162,11 @@
 			this.postFetch("/verify/param", {webKey: this.webKey}, this.verifyParamsCallback);
 		},
 		initVerify: function (load) {
-			if (!this.paramLoaded) return;
+			if (!this.paramLoaded) {
+				this.message = "无效的地址";
+				this.changeLoadBtnInfo();
+				return;
+			}
 			if (!load) {
 				if (this.verifyResult) {
 					this.hide = true;
@@ -219,6 +225,7 @@
 				self.hide = false;
 				self.message = null;
 				self.series = [];
+				self.positions = [];
 				self.mode = response.md;
 				self.key = response.k;
 				self.aesKey = md5Encrypt16(self.key);
@@ -248,6 +255,11 @@
 			if (response.httpCode === 200) {
 				self.verifyResCallback(response.success, response.expired);
 				self.verifyResult = response.result;
+				if (self.verifyResult && self.successCallback != null && typeof self.successCallback == "function") {
+					self.successCallback();
+					// var copyCallback = self.successCallback.bind(self);
+					// copyCallback();
+				}
 			} else {
 				self.verifyResCallback(null, true);
 			}
@@ -350,7 +362,7 @@
 			failureIcon.className = "icon-x-check-alt";
 			return failureIcon;
 		},
-		startVerify: function () {
+		defaultStartVerify: function () {
 			var self = this;
 			var startVerify = doc.createElement("div");
 			startVerify.className = "startVerify";
@@ -372,6 +384,15 @@
 			var loadBtnImg = doc.createElement("div");
 			loadBtnImg.className = "btnImg logoImg";
 			loadBtn.appendChild(loadBtnImg);
+		},
+		startVerify: function () {
+			var self = this;
+			var startVerify = self.getStartVerify();
+			this.applyStyle(startVerify, this.startVerifyStyle());
+			
+			var loadBtnInfo = startVerify.querySelector(".loadBtn .loadBtnInfo");
+			this.applyStyle(loadBtnInfo, {color: ""});
+			loadBtnInfo.innerText = "点击打开验证";
 		},
 		getStartVerify: function () {
 			return this.container.querySelector(".startVerify");

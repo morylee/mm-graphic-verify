@@ -59,6 +59,40 @@ When verifying success, you can get the successful token of `GraphicVerify` from
 </html>
 ```
 
+At the same time, you can define your own callback function, then, you can do what you want to do.
+
+``` bash
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="yourPath/verify.css">
+	</head>
+	
+	<body>
+		<div id="gVerify"></div>
+		<button id="checkTokenBtn" onclick="checkToken" disabled>验证token</button>
+		
+		<script type="text/javascript" src="yourPath/verify.js"></script>
+		<script type="text/javascript">
+			var gv = new GraphicVerify({
+				webKey: "643b1dd9ddb2477d9963f036a988ed7d",
+				container: "#gVerify",
+				successCallback: enableCheckButton
+			});
+			
+			function enableCheckButton () {
+				document.getElementById("checkTokenBtn").disabled = "";
+			}
+			
+			function checkToken () {
+				var token = gv.verifyResult;
+				
+				# do check token...
+			}
+		</script>
+	</body>
+</html>
+```
+
 Also, you may want to reset the `GraphicVerify`, and we provide a method to do that.
 
 ``` bash
@@ -99,8 +133,9 @@ Also, you may want to reset the `GraphicVerify`, and we provide a method to do t
 | color | String | #333333 | `GraphicVerify` button's default color |
 | successColor | String | #1ca21c | `GraphicVerify` success color |
 | failureColor | String | #dd1010 | `GraphicVerify` failure color |
+| successCallback | fn | null | `GraphicVerify` verify success callback |
 
-## methods
+## Methods
 
 | Name | In Param Type | Description |
 | :------: | ---- | ----------- |

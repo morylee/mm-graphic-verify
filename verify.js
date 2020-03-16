@@ -788,46 +788,67 @@
 		dragStartEvent: function (target) {
 			var self = this;
 			target.addEventListener("mousedown", function (event) {
-				if (!self.showVerifying && !self.success) {
-					self.isMoving = true
-					var guideIcon = self.getGuideIcon();
-					self.x = (event.pageX || event.touches[0].pageX) - parseInt(guideIcon.style.left.replace("px", ""), 10)
-				}
+				self.dragStartEventFn(event);
 			});
+			target.addEventListener("touchstart", function (event) {
+				self.dragStartEventFn(event);
+			});
+		},
+		dragStartEventFn: function (event) {
+			var self = this;
+			if (!self.showVerifying && !self.success) {
+				self.isMoving = true
+				var guideIcon = self.getGuideIcon();
+				self.x = (event.pageX || event.touches[0].pageX) - parseInt(guideIcon.style.left.replace("px", ""), 10)
+			}
 		},
 		movingDragEvent: function (target) {
 			var self = this;
 			target.addEventListener("mousemove", function (event) {
-				if (self.isMoving && !self.success) {
-					var guideIcon = self.getGuideIcon();
-					var height = guideIcon.offsetHeight;
-					var _x = (event.pageX || event.touches[0].pageX) - self.x;
-					var guideIcon = self.getGuideIcon();
-					var dragBar = self.getDragBar();
-					if (_x >= 0 && _x <= (self.bgWidth - height)) {
-						guideIcon.style.left = _x + "px";
-						dragBar.style.left = (_x + 5) + "px";
-					} else if (_x > (self.bgWidth - height)) {
-						guideIcon.style.left = (self.bgWidth - height)+ "px";
-						dragBar.style.left = (self.bgWidth - height + 5) + "px";
-					}
-				}
+				self.movingDragEventFn(event);
 			})
+			target.addEventListener("touchmove", function (event) {
+				self.movingDragEventFn(event);
+			})
+		},
+		movingDragEventFn: function (event) {
+			var self = this;
+			if (self.isMoving && !self.success) {
+				var guideIcon = self.getGuideIcon();
+				var height = guideIcon.offsetHeight;
+				var _x = (event.pageX || event.touches[0].pageX) - self.x;
+				var guideIcon = self.getGuideIcon();
+				var dragBar = self.getDragBar();
+				if (_x >= 0 && _x <= (self.bgWidth - height)) {
+					guideIcon.style.left = _x + "px";
+					dragBar.style.left = (_x + 5) + "px";
+				} else if (_x > (self.bgWidth - height)) {
+					guideIcon.style.left = (self.bgWidth - height)+ "px";
+					dragBar.style.left = (self.bgWidth - height + 5) + "px";
+				}
+			}
 		},
 		finishDragEvent: function (target) {
 			var self = this;
 			target.addEventListener("mouseup", function (event) {
-				if (self.isMoving && !self.success) {
-					var _x = (event.pageX || event.changedTouches[0].pageX) - self.x;
-					if (self.positions.length < self.times) self.positions.push([_x, self.iconY]);
-					if (self.positions.length === self.times) {
-						self.showVerifying = true;
-						self.changeVerifyingIconState();
-						self.isMoving = false;
-						self.validVerify();
-					}
-				}
+				self.finishDragEventFn(event);
 			})
+			target.addEventListener("touchend", function (event) {
+				self.finishDragEventFn(event);
+			})
+		},
+		finishDragEventFn: function (event) {
+			var self = this;
+			if (self.isMoving && !self.success) {
+				var _x = (event.pageX || event.changedTouches[0].pageX) - self.x;
+				if (self.positions.length < self.times) self.positions.push([_x, self.iconY]);
+				if (self.positions.length === self.times) {
+					self.showVerifying = true;
+					self.changeVerifyingIconState();
+					self.isMoving = false;
+					self.validVerify();
+				}
+			}
 		},
 		reset: function () {
 			var token = this.verifyResult;
